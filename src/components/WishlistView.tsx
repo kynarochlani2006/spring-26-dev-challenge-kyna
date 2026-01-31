@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react";
 import Image from "next/image";
+import { getGuestHeaders } from "@/lib/guest";
 
 type WishlistItem = {
   id: string;
@@ -24,7 +25,9 @@ export default function WishlistView() {
 
   useEffect(() => {
     const loadWishlist = async () => {
-      const response = await fetch("/api/wishlist");
+      const response = await fetch("/api/wishlist", {
+        headers: getGuestHeaders(),
+      });
       const data = (await response.json()) as WishlistResponse;
       setItems(data.items ?? []);
     };
@@ -36,7 +39,7 @@ export default function WishlistView() {
     startTransition(async () => {
       await fetch("/api/wishlist", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...getGuestHeaders() },
         body: JSON.stringify({ productId }),
       });
       setItems((prev) => prev.filter((item) => item.product.id !== productId));

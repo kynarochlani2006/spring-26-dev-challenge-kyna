@@ -112,3 +112,11 @@ explain and defend the build in interviews.
 - Added a lightweight size & fit assistant on the product detail page.
 - Simple 3-step quiz suggests a size based on fit preference and usage.
 
+### AI chatbot teaser
+- Added a small on-page chatbot widget with canned responses.
+- Demonstrates AI/assistant thinking without external APIs.
+
+### Guest session reset
+- Guest cart/wishlist now use a per-session header ID instead of a cookie.
+- Refreshing the page clears guest state; logged-in users remain persistent.
+

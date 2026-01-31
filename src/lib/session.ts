@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
 
 const SESSION_COOKIE = "session_token";
-const GUEST_COOKIE = "guest_id";
 const SESSION_DAYS = 7;
 
 export async function createSession(userId: string) {
@@ -30,7 +29,7 @@ export async function createSession(userId: string) {
   return token;
 }
 
-export async function getAuthContext() {
+export async function getAuthContext(request?: Request) {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get(SESSION_COOKIE)?.value;
 
@@ -43,16 +42,7 @@ export async function getAuthContext() {
     }
   }
 
-  let guestId = cookieStore.get(GUEST_COOKIE)?.value;
-  if (!guestId) {
-    guestId = crypto.randomUUID();
-    cookieStore.set(GUEST_COOKIE, guestId, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-    });
-  }
+  const guestId = request?.headers.get("x-guest-id") ?? null;
 
   return { userId: null, guestId };
 }

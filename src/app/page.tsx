@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import ProductGrid from "@/components/ProductGrid";
+import ChatbotWidget from "@/components/ChatbotWidget";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -182,7 +183,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 src={heroImage}
                 alt="Navy runner"
                 fill
-                className="object-contain"
+                className="object-contain hero-spin"
                 priority
               />
             </div>
@@ -226,6 +227,7 @@ export default async function Home({ searchParams }: HomeProps) {
       </main>
 
       <SiteFooter />
+      <ChatbotWidget />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useState, useTransition } from "react";
+import { getGuestHeaders } from "@/lib/guest";
 
 type ProductDetail = {
   id: string;
@@ -43,8 +44,8 @@ export default function ProductDetailView({
   useEffect(() => {
     const loadState = async () => {
       const [wishlistRes, cartRes] = await Promise.all([
-        fetch("/api/wishlist"),
-        fetch("/api/cart"),
+        fetch("/api/wishlist", { headers: getGuestHeaders() }),
+        fetch("/api/cart", { headers: getGuestHeaders() }),
       ]);
       const wishlistData = await wishlistRes.json();
       const cartData = await cartRes.json();
@@ -69,7 +70,7 @@ export default function ProductDetailView({
     startTransition(async () => {
       await fetch("/api/cart", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...getGuestHeaders() },
         body: JSON.stringify({ productId, quantity: 1 }),
       });
       setCartIds((prev) => new Set(prev).add(productId));
@@ -80,7 +81,7 @@ export default function ProductDetailView({
     startTransition(async () => {
       await fetch("/api/wishlist", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...getGuestHeaders() },
         body: JSON.stringify({ productId }),
       });
       setWishlistIds((prev) => {

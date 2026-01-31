@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react";
 import Image from "next/image";
+import { getGuestHeaders } from "@/lib/guest";
 
 type CartItem = {
   id: string;
@@ -28,7 +29,9 @@ export default function CartView() {
 
   useEffect(() => {
     const loadCart = async () => {
-      const response = await fetch("/api/cart");
+      const response = await fetch("/api/cart", {
+        headers: getGuestHeaders(),
+      });
       const data = (await response.json()) as CartResponse;
       setCart(data.cart);
     };
@@ -40,7 +43,7 @@ export default function CartView() {
     startTransition(async () => {
       await fetch("/api/cart", {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...getGuestHeaders() },
         body: JSON.stringify({ productId }),
       });
       setCart((prev) =>

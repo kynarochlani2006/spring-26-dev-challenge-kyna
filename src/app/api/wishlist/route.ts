@@ -7,9 +7,9 @@ const wishlistSchema = z.object({
   productId: z.string().min(1),
 });
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const { userId, guestId } = await getAuthContext();
+    const { userId, guestId } = await getAuthContext(request);
     const items = await prisma.wishlistItem.findMany({
       where: userId ? { userId } : { guestId: guestId ?? undefined },
       include: { product: true },
@@ -27,7 +27,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { userId, guestId } = await getAuthContext();
+    const { userId, guestId } = await getAuthContext(request);
     const body = await request.json();
     const parsed = wishlistSchema.safeParse(body);
 

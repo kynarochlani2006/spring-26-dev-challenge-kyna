@@ -28,9 +28,9 @@ async function getOrCreateCart(userId: string | null, guestId: string | null) {
   });
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const { userId, guestId } = await getAuthContext();
+    const { userId, guestId } = await getAuthContext(request);
     const cart = await prisma.cart.findFirst({
       where: userId ? { userId } : { guestId: guestId ?? undefined },
       include: { items: { include: { product: true } } },
@@ -48,7 +48,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { userId, guestId } = await getAuthContext();
+    const { userId, guestId } = await getAuthContext(request);
     const body = await request.json();
     const parsed = cartSchema.safeParse(body);
 
@@ -90,7 +90,7 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const { userId, guestId } = await getAuthContext();
+    const { userId, guestId } = await getAuthContext(request);
     const body = await request.json();
     const parsed = cartSchema.pick({ productId: true }).safeParse(body);
 
